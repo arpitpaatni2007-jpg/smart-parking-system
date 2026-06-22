@@ -144,6 +144,32 @@ class VehicleType extends Model
         return $this->hasMany(Vehicle::class, 'vehicle_type_id');
     }
 
+    /**
+     * A VehicleType HAS MANY PricingRules.
+     *
+     * Each vehicle type can have multiple pricing rules for
+     * different billing cycles. For example, "Car" might have:
+     *   - An hourly rule  → ₹30 first hour, ₹20/hr after
+     *   - A daily rule    → ₹200 flat per day
+     *   - A monthly rule  → ₹3000 flat per month
+     *
+     * Useful for:
+     *   - Loading the correct price during booking based on
+     *     the selected vehicle type and duration.
+     *   - Displaying pricing breakdowns in the app's parking
+     *     detail screen.
+     *
+     * Usage:
+     *   $vehicleType->pricingRules                → all rules (Collection)
+     *   $vehicleType->pricingRules()->active()->get() → only active rules
+     *
+     * Added in: Master Management Phase 2
+     */
+    public function pricingRules(): HasMany
+    {
+        return $this->hasMany(PricingRule::class, 'vehicle_type_id');
+    }
+
     /*
     |--------------------------------------------------------------------
     | Scopes
