@@ -16,7 +16,7 @@ use Illuminate\Validation\Rule;
  * across parking slots, vehicles, and pricing rules — so their
  * names must be unique to avoid confusion.
  */
-class StoreVehicleTypeRequest extends FormRequest
+class UpdateVehicleTypeRequest extends FormRequest
 {
     public function authorize(): bool
     {
