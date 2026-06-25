@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\CityController;
 use App\Http\Controllers\Api\ParkingFacilityController;
 use App\Http\Controllers\Api\StateController;
 use App\Http\Controllers\Api\VehicleTypeController;
+use App\Http\Controllers\Api\ParkingController;
+use App\Http\Controllers\Api\ParkingSlotController;
+use App\Http\Controllers\Api\ParkingImageController;
+use App\Http\Controllers\Api\OwnerBankDetailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,183 +51,19 @@ Route::prefix('v1')->group(function () {
     // ========================================================
     // AUTH ROUTES — PUBLIC (no token required)
     // ========================================================
-    // These endpoints are accessible to everyone.
-    // No auth:sanctum middleware — users don't have a token yet.
-    // ========================================================
 
     Route::prefix('auth')->name('auth.')->group(function () {
 
-        /**
-         * POST /api/v1/auth/register
-         *
-         * Register a new user or owner account.
-         *
-         * Request Body (JSON):
-         *   {
-         *     "name": "Arpit Sharma",
-         *     "email": "arpit@example.com",
-         *     "phone": "9876543210",
-         *     "password": "SecurePass@123",
-         *     "password_confirmation": "SecurePass@123",
-         *     "role_id": 2
-         *   }
-         *
-         * Success Response (201):
-         *   {
-         *     "success": true,
-         *     "message": "Account created successfully.",
-         *     "data": {
-         *       "user": { ... },
-         *       "token": "3|abc123...",
-         *       "token_type": "Bearer"
-         *     }
-         *   }
-         */
         Route::post('register', [AuthController::class, 'register'])->name('register');
-
-        /**
-         * POST /api/v1/auth/login
-         *
-         * Authenticate with email + password. Returns a Sanctum Bearer token.
-         *
-         * Request Body (JSON):
-         *   {
-         *     "email": "arpit@example.com",
-         *     "password": "SecurePass@123"
-         *   }
-         *
-         * Success Response (200):
-         *   {
-         *     "success": true,
-         *     "message": "Login successful.",
-         *     "data": {
-         *       "user": { ... },
-         *       "token": "4|xyz789...",
-         *       "token_type": "Bearer"
-         *     }
-         *   }
-         *
-         * Error Response (401):
-         *   {
-         *     "success": false,
-         *     "message": "Invalid email or password."
-         *   }
-         */
         Route::post('login', [AuthController::class, 'login'])->name('login');
 
-        // ========================================================
-        // AUTH ROUTES — PROTECTED (Sanctum token required)
-        // ========================================================
-        // These routes require a valid Bearer token in the header.
-        // auth:sanctum middleware validates the token automatically.
-        // If token is missing or invalid → 401 Unauthorized.
-        // ========================================================
-
+        // ── Protected Auth Routes ──────────────────────────────────────
         Route::middleware('auth:sanctum')->group(function () {
-
-            /**
-             * POST /api/v1/auth/logout
-             *
-             * Revoke the current device's Sanctum token.
-             * The user remains logged in on other devices.
-             *
-             * Request Header:
-             *   Authorization: Bearer {token}
-             *
-             * Success Response (200):
-             *   {
-             *     "success": true,
-             *     "message": "Logged out successfully.",
-             *     "data": null
-             *   }
-             */
-            Route::post('logout', [AuthController::class, 'logout'])->name('logout');
-
-            /**
-             * GET /api/v1/auth/profile
-             *
-             * Retrieve the authenticated user's profile and role information.
-             * Also used by the Flutter app as a token validity check on startup.
-             *
-             * Request Header:
-             *   Authorization: Bearer {token}
-             *
-             * Success Response (200):
-             *   {
-             *     "success": true,
-             *     "message": "Profile retrieved successfully.",
-             *     "data": {
-             *       "id": 1,
-             *       "name": "Arpit Sharma",
-             *       "email": "arpit@example.com",
-             *       "phone": "9876543210",
-             *       "role": {
-             *         "id": 2,
-             *         "name": "owner",
-             *         "display_name": "Parking Owner"
-             *       },
-             *       "is_active": true,
-             *       "email_verified": false,
-             *       "created_at": "2025-01-15T10:30:00.000000Z"
-             *     }
-             *   }
-             */
-            Route::get('profile', [AuthController::class, 'profile'])->name('profile');
-
-            /**
-             * PUT /api/v1/auth/profile
-             *
-             * Update the authenticated user's profile details.
-             *
-             * Request Header:
-             *   Authorization: Bearer {token}
-             *
-             * Request Body (JSON) — all fields optional:
-             *   {
-             *     "name": "Arpit Kumar",
-             *     "phone": "9876500000"
-             *   }
-             *
-             * Success Response (200):
-             *   {
-             *     "success": true,
-             *     "message": "Profile updated successfully.",
-             *     "data": { ... updated user ... }
-             *   }
-             */
-            Route::put('profile', [AuthController::class, 'updateProfile'])->name('profile.update');
-
-            /**
-             * POST /api/v1/auth/change-password
-             *
-             * Change the authenticated user's password.
-             *
-             * Request Header:
-             *   Authorization: Bearer {token}
-             *
-             * Request Body (JSON):
-             *   {
-             *     "current_password": "OldPass@123",
-             *     "password": "NewPass@456",
-             *     "password_confirmation": "NewPass@456"
-             *   }
-             *
-             * Success Response (200):
-             *   {
-             *     "success": true,
-             *     "message": "Password changed successfully.",
-             *     "data": null
-             *   }
-             *
-             * Error Response (422):
-             *   {
-             *     "success": false,
-             *     "message": "Current password is incorrect."
-             *   }
-             */
+            Route::post('logout',          [AuthController::class, 'logout'])->name('logout');
+            Route::get('profile',          [AuthController::class, 'profile'])->name('profile');
+            Route::put('profile',          [AuthController::class, 'updateProfile'])->name('profile.update');
             Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.change');
-
-        }); // end auth:sanctum group
+        });
 
     }); // end /auth prefix
 
@@ -233,41 +73,6 @@ Route::prefix('v1')->group(function () {
     //
     // All master management routes sit under /api/v1/master/
     // and require a valid Sanctum token.
-    //
-    // FULL ROUTE MAP GENERATED BY apiResource():
-    //
-    // ┌────────────────────────────────────────────────────────────────────────┐
-    // │ Verb    │ URI                                        │ Action  │ Name  │
-    // ├────────────────────────────────────────────────────────────────────────┤
-    // │ GET     │ /api/v1/master/states                      │ index   │       │
-    // │ POST    │ /api/v1/master/states                      │ store   │       │
-    // │ GET     │ /api/v1/master/states/{state}              │ show    │       │
-    // │ PUT     │ /api/v1/master/states/{state}              │ update  │       │
-    // │ DELETE  │ /api/v1/master/states/{state}              │ destroy │       │
-    // │ PATCH   │ /api/v1/master/states/{state}/toggle-status│ custom  │       │
-    // ├────────────────────────────────────────────────────────────────────────┤
-    // │ GET     │ /api/v1/master/cities                      │ index   │       │
-    // │ POST    │ /api/v1/master/cities                      │ store   │       │
-    // │ GET     │ /api/v1/master/cities/{city}               │ show    │       │
-    // │ PUT     │ /api/v1/master/cities/{city}               │ update  │       │
-    // │ DELETE  │ /api/v1/master/cities/{city}               │ destroy │       │
-    // │ PATCH   │ /api/v1/master/cities/{city}/toggle-status │ custom  │       │
-    // │ GET     │ /api/v1/master/states/{state}/cities       │ byState │       │
-    // ├────────────────────────────────────────────────────────────────────────┤
-    // │ GET     │ /api/v1/master/vehicle-types               │ index   │       │
-    // │ POST    │ /api/v1/master/vehicle-types               │ store   │       │
-    // │ GET     │ /api/v1/master/vehicle-types/{vehicle_type}│ show    │       │
-    // │ PUT     │ /api/v1/master/vehicle-types/{vehicle_type}│ update  │       │
-    // │ DELETE  │ /api/v1/master/vehicle-types/{vehicle_type}│ destroy │       │
-    // │ PATCH   │ /api/v1/master/vehicle-types/{id}/toggle   │ custom  │       │
-    // ├────────────────────────────────────────────────────────────────────────┤
-    // │ GET     │ /api/v1/master/parking-facilities          │ index   │       │
-    // │ POST    │ /api/v1/master/parking-facilities          │ store   │       │
-    // │ GET     │ /api/v1/master/parking-facilities/{id}     │ show    │       │
-    // │ PUT     │ /api/v1/master/parking-facilities/{id}     │ update  │       │
-    // │ DELETE  │ /api/v1/master/parking-facilities/{id}     │ destroy │       │
-    // │ PATCH   │ /api/v1/master/parking-facilities/{id}/tog │ custom  │       │
-    // └────────────────────────────────────────────────────────────────────────┘
     //
     // VERIFY IN TERMINAL:
     //   php artisan route:list --path=api/v1/master
@@ -279,41 +84,27 @@ Route::prefix('v1')->group(function () {
         ->name('master.')
         ->group(function () {
 
-            // ────────────────────────────────────────────────────
-            // STATES
-            // ────────────────────────────────────────────────────
-            // apiResource() registers 5 standard REST endpoints:
-            //   GET    /master/states              → index   (list + search + paginate)
-            //   POST   /master/states              → store   (create)
-            //   GET    /master/states/{state}      → show    (single record)
-            //   PUT    /master/states/{state}      → update  (full update)
-            //   DELETE /master/states/{state}      → destroy (soft-delete / deactivate)
-            //
-            // We exclude 'create' and 'edit' because those return
-            // HTML forms — not needed in a JSON API context.
-            // ────────────────────────────────────────────────────
-            Route::apiResource('states', StateController::class)
-                ->names('states');
+            // ── STATES ────────────────────────────────────────────────────
+            // GET    /api/v1/master/states
+            // POST   /api/v1/master/states
+            // GET    /api/v1/master/states/{state}
+            // PUT    /api/v1/master/states/{state}
+            // DELETE /api/v1/master/states/{state}
+            Route::apiResource('states', StateController::class)->names('states');
 
             // PATCH /api/v1/master/states/{state}/toggle-status
-            // Quick status flip without sending a full update body.
-            // Used by the Admin Panel's toggle switch on the states list.
             Route::patch(
                 'states/{state}/toggle-status',
                 [StateController::class, 'toggleStatus']
             )->name('states.toggle-status');
 
-            // ────────────────────────────────────────────────────
-            // CITIES
-            // ────────────────────────────────────────────────────
-            // GET    /master/cities              → index   (list, filter by state_id)
-            // POST   /master/cities              → store   (create, requires state_id)
-            // GET    /master/cities/{city}       → show    (with state + parking count)
-            // PUT    /master/cities/{city}       → update
-            // DELETE /master/cities/{city}       → destroy (deactivate)
-            // ────────────────────────────────────────────────────
-            Route::apiResource('cities', CityController::class)
-                ->names('cities');
+            // ── CITIES ────────────────────────────────────────────────────
+            // GET    /api/v1/master/cities
+            // POST   /api/v1/master/cities
+            // GET    /api/v1/master/cities/{city}
+            // PUT    /api/v1/master/cities/{city}
+            // DELETE /api/v1/master/cities/{city}
+            Route::apiResource('cities', CityController::class)->names('cities');
 
             // PATCH /api/v1/master/cities/{city}/toggle-status
             Route::patch(
@@ -322,29 +113,18 @@ Route::prefix('v1')->group(function () {
             )->name('cities.toggle-status');
 
             // GET /api/v1/master/states/{state}/cities
-            // Cascaded dropdown endpoint: returns all active cities for
-            // a given state. Used in Owner App + User App when a state
-            // is selected and the city dropdown needs to be populated.
-            // No pagination — returns the full list for the dropdown.
+            // Cascaded dropdown: all active cities for a given state.
             Route::get(
                 'states/{state}/cities',
                 [CityController::class, 'byState']
             )->name('states.cities');
 
-            // ────────────────────────────────────────────────────
-            // VEHICLE TYPES
-            // ────────────────────────────────────────────────────
-            // GET    /master/vehicle-types                  → index
-            // POST   /master/vehicle-types                  → store
-            // GET    /master/vehicle-types/{vehicle_type}   → show
-            // PUT    /master/vehicle-types/{vehicle_type}   → update
-            // DELETE /master/vehicle-types/{vehicle_type}   → destroy
-            //
-            // NOTE: The route parameter name {vehicle_type} uses
-            // snake_case (Laravel convention for multi-word resources).
-            // Laravel automatically resolves this to the VehicleType model
-            // via route model binding.
-            // ────────────────────────────────────────────────────
+            // ── VEHICLE TYPES ─────────────────────────────────────────────
+            // GET    /api/v1/master/vehicle-types
+            // POST   /api/v1/master/vehicle-types
+            // GET    /api/v1/master/vehicle-types/{vehicle_type}
+            // PUT    /api/v1/master/vehicle-types/{vehicle_type}
+            // DELETE /api/v1/master/vehicle-types/{vehicle_type}
             Route::apiResource('vehicle-types', VehicleTypeController::class)
                 ->parameters(['vehicle-types' => 'vehicle_type'])
                 ->names('vehicle-types');
@@ -355,21 +135,12 @@ Route::prefix('v1')->group(function () {
                 [VehicleTypeController::class, 'toggleStatus']
             )->name('vehicle-types.toggle-status');
 
-            // ────────────────────────────────────────────────────
-            // PARKING FACILITIES
-            // ────────────────────────────────────────────────────
-            // GET    /master/parking-facilities                    → index
-            // POST   /master/parking-facilities                    → store
-            // GET    /master/parking-facilities/{parking_facility} → show
-            // PUT    /master/parking-facilities/{parking_facility} → update
-            // DELETE /master/parking-facilities/{parking_facility} → destroy
-            //
-            // NOTE: ->parameters() maps the kebab-case resource name
-            // "parking-facilities" to the snake_case parameter name
-            // {parking_facility} that Laravel route model binding expects.
-            // Without this, Laravel would use {parking-facilities} which
-            // is invalid as a PHP variable name.
-            // ────────────────────────────────────────────────────
+            // ── PARKING FACILITIES ────────────────────────────────────────
+            // GET    /api/v1/master/parking-facilities
+            // POST   /api/v1/master/parking-facilities
+            // GET    /api/v1/master/parking-facilities/{parking_facility}
+            // PUT    /api/v1/master/parking-facilities/{parking_facility}
+            // DELETE /api/v1/master/parking-facilities/{parking_facility}
             Route::apiResource('parking-facilities', ParkingFacilityController::class)
                 ->parameters(['parking-facilities' => 'parking_facility'])
                 ->names('parking-facilities');
@@ -383,20 +154,202 @@ Route::prefix('v1')->group(function () {
         }); // end master group
 
     // ========================================================
-    // FUTURE ROUTE GROUPS (to be added in next phases)
+    // PARKING MANAGEMENT ROUTES — PROTECTED
+    // ========================================================
+    //
+    // All routes require a valid Sanctum Bearer token.
+    //
+    // FULL ROUTE MAP:
+    //
+    // ┌────────────────────────────────────────────────────────────────────────────┐
+    // │ Verb   │ URI                                              │ Action          │
+    // ├────────────────────────────────────────────────────────────────────────────┤
+    // │ GET    │ /api/v1/parkings                                 │ index           │
+    // │ POST   │ /api/v1/parkings                                 │ store           │
+    // │ GET    │ /api/v1/parkings/{parking}                       │ show            │
+    // │ PUT    │ /api/v1/parkings/{parking}                       │ update          │
+    // │ DELETE │ /api/v1/parkings/{parking}                       │ destroy         │
+    // ├────────────────────────────────────────────────────────────────────────────┤
+    // │ GET    │ /api/v1/parkings/{parking}/slots                 │ index           │
+    // │ POST   │ /api/v1/parkings/{parking}/slots                 │ store           │
+    // │ GET    │ /api/v1/parkings/{parking}/slots/{slot}          │ show            │
+    // │ PUT    │ /api/v1/parkings/{parking}/slots/{slot}          │ update          │
+    // │ DELETE │ /api/v1/parkings/{parking}/slots/{slot}          │ destroy         │
+    // ├────────────────────────────────────────────────────────────────────────────┤
+    // │ GET    │ /api/v1/parkings/{parking}/images                │ index           │
+    // │ POST   │ /api/v1/parkings/{parking}/images                │ store (upload)  │
+    // │ GET    │ /api/v1/parkings/{parking}/images/{image}        │ show            │
+    // │ DELETE │ /api/v1/parkings/{parking}/images/{image}        │ destroy         │
+    // │ PATCH  │ /api/v1/parkings/{parking}/images/{image}/primary│ setPrimary      │
+    // ├────────────────────────────────────────────────────────────────────────────┤
+    // │ GET    │ /api/v1/owner/bank-detail                        │ index           │
+    // │ POST   │ /api/v1/owner/bank-detail                        │ store           │
+    // │ GET    │ /api/v1/owner/bank-detail/{detail}               │ show            │
+    // │ PUT    │ /api/v1/owner/bank-detail/{detail}               │ update          │
+    // │ DELETE │ /api/v1/owner/bank-detail/{detail}               │ destroy         │
+    // └────────────────────────────────────────────────────────────────────────────┘
+    //
+    // VERIFY IN TERMINAL:
+    //   php artisan route:list --path=api/v1/parkings
+    //   php artisan route:list --path=api/v1/owner
+    //
+    // ========================================================
+
+    Route::middleware('auth:sanctum')->group(function () {
+
+        // ──────────────────────────────────────────────────────────────
+        // PARKING LOCATIONS
+        // ──────────────────────────────────────────────────────────────
+        //
+        // GET    /api/v1/parkings
+        //   → List/search parkings (paginated).
+        //   → Query params: ?search=name &city_id=3 &state_id=1
+        //                   &status=active &lat=28.61 &lng=77.20 &radius=10
+        //                   &per_page=15
+        //   → Users see only active parkings.
+        //   → Owners see only their own parkings (any status).
+        //
+        // POST   /api/v1/parkings
+        //   → Owner: register a new parking location.
+        //   → Status defaults to 'pending' (requires admin approval).
+        //   → Accepts facility_ids[] for many-to-many facility sync.
+        //
+        // GET    /api/v1/parkings/{parking}
+        //   → Full detail: state, city, owner, images (gallery),
+        //     facilities, slots with vehicle types.
+        //
+        // PUT    /api/v1/parkings/{parking}
+        //   → Owner: partial update (only sent fields are changed).
+        //   → Accepts facility_ids[] to replace all facility links.
+        //
+        // DELETE /api/v1/parkings/{parking}
+        //   → Owner: soft-delete.
+        //   → Returns 409 Conflict if parking has active bookings.
+        //
+        // ──────────────────────────────────────────────────────────────
+        Route::apiResource('parkings', ParkingController::class);
+
+        // ──────────────────────────────────────────────────────────────
+        // PARKING SLOTS (nested under parkings)
+        // ──────────────────────────────────────────────────────────────
+        //
+        // GET    /api/v1/parkings/{parking}/slots
+        //   → List all slots for this parking.
+        //   → Query params: ?vehicle_type_id=2 &slot_type=ev &status=available
+        //   → Users see only available slots; owners see all.
+        //
+        // POST   /api/v1/parkings/{parking}/slots
+        //   → Owner: add a new slot.
+        //   → Validates slot_number uniqueness within this parking only.
+        //   → Auto-increments parking.total_slots.
+        //
+        // GET    /api/v1/parkings/{parking}/slots/{slot}
+        //   → Single slot detail with vehicle type.
+        //   → Validates {slot} belongs to {parking} (scope check).
+        //
+        // PUT    /api/v1/parkings/{parking}/slots/{slot}
+        //   → Owner: update slot details or toggle maintenance status.
+        //   → Returns 409 Conflict if slot status is 'booked'.
+        //
+        // DELETE /api/v1/parkings/{parking}/slots/{slot}
+        //   → Owner: soft-delete slot.
+        //   → Returns 409 Conflict if slot is currently booked.
+        //   → Auto-decrements parking.total_slots.
+        //
+        // ──────────────────────────────────────────────────────────────
+        Route::apiResource('parkings.slots', ParkingSlotController::class);
+
+        // ──────────────────────────────────────────────────────────────
+        // PARKING IMAGES (nested under parkings)
+        // ──────────────────────────────────────────────────────────────
+        //
+        // GET    /api/v1/parkings/{parking}/images
+        //   → List all images for this parking (primary image first).
+        //
+        // POST   /api/v1/parkings/{parking}/images
+        //   → Owner: upload a new image (multipart/form-data).
+        //   → Accepts: image (file, max 5MB, jpeg/jpg/png/webp), is_primary (bool).
+        //   → Filename stored as UUID (prevents collisions & path traversal).
+        //   → If first image for this parking → auto-set as primary.
+        //   → If is_primary=true → demotes any existing primary image.
+        //
+        // GET    /api/v1/parkings/{parking}/images/{image}
+        //   → Single image detail. Validates {image} belongs to {parking}.
+        //
+        // DELETE /api/v1/parkings/{parking}/images/{image}
+        //   → Owner: delete image record + physical file from storage.
+        //   → If deleted image was primary → auto-promotes the next oldest image.
+        //
+        // NOTE: No PUT/PATCH on the resource — updating an image means
+        // delete + re-upload. The only "update" is toggling primary,
+        // handled by the dedicated route below.
+        //
+        // ──────────────────────────────────────────────────────────────
+        Route::apiResource('parkings.images', ParkingImageController::class)
+             ->only(['index', 'store', 'show', 'destroy']);
+
+        // PATCH /api/v1/parkings/{parking}/images/{image}/primary
+        //   → Owner: promote this image to be the primary thumbnail.
+        //   → Automatically demotes the current primary image.
+        //   → Validates {image} belongs to {parking}.
+        Route::patch(
+            'parkings/{parking}/images/{image}/primary',
+            [ParkingImageController::class, 'setPrimary']
+        )->name('parkings.images.primary');
+
+        // ──────────────────────────────────────────────────────────────
+        // OWNER BANK DETAILS
+        // ──────────────────────────────────────────────────────────────
+        //
+        // Prefixed under /owner/ to make intent clear in the URL.
+        // Only users with the 'owner' role can access these routes.
+        // Role enforcement is done inside the controller methods.
+        //
+        // GET    /api/v1/owner/bank-detail
+        //   → Get the authenticated owner's bank detail record.
+        //   → Returns null data (not 404) if not yet submitted.
+        //
+        // POST   /api/v1/owner/bank-detail
+        //   → Submit bank details for payout setup.
+        //   → account_number is encrypted before storage (AES-256-CBC).
+        //   → Status defaults to 'pending_verification' (admin must approve).
+        //   → Returns 409 Conflict if owner already has bank details on file.
+        //
+        // GET    /api/v1/owner/bank-detail/{detail}
+        //   → Get a specific record by ID.
+        //   → Owner can only access their own record (forbidden otherwise).
+        //
+        // PUT    /api/v1/owner/bank-detail/{detail}
+        //   → Update bank details (partial update supported).
+        //   → SECURITY: ANY update resets status → 'pending_verification'.
+        //     This forces admin re-verification before payouts resume.
+        //   → account_number is re-encrypted if provided.
+        //   → Response always returns masked_account_number (last 4 digits only).
+        //
+        // DELETE /api/v1/owner/bank-detail/{detail}
+        //   → Soft-delete (preserves audit trail for historical payouts).
+        //   → Owner cannot receive payouts until new details are submitted.
+        //
+        // ──────────────────────────────────────────────────────────────
+        Route::prefix('owner')->name('owner.')->group(function () {
+            Route::apiResource('bank-detail', OwnerBankDetailController::class)
+                 ->parameters(['bank-detail' => 'detail']);
+        });
+
+    }); // end auth:sanctum (parking management)
+
+    // ========================================================
+    // FUTURE ROUTE GROUPS
     // ========================================================
 
     /*
     |----------------------------------------------------------
-    | PARKING ROUTES (Parking Module — Phase Next)
+    | VEHICLE ROUTES (Vehicle Module)
     |----------------------------------------------------------
-    | Route::middleware('auth:sanctum')->prefix('parkings')
-    |   ->name('parkings.')->group(function () {
-    |     Route::get('/', [ParkingController::class, 'index']);
-    |     Route::post('/', [ParkingController::class, 'store']);
-    |     Route::get('{parking}', [ParkingController::class, 'show']);
-    |     Route::put('{parking}', [ParkingController::class, 'update']);
-    |     Route::delete('{parking}', [ParkingController::class, 'destroy']);
+    | Route::middleware('auth:sanctum')->prefix('vehicles')
+    |   ->name('vehicles.')->group(function () {
+    |     Route::apiResource('/', VehicleController::class);
+    |     Route::apiResource('{vehicle}/documents', VehicleDocumentController::class);
     | });
     |
     |----------------------------------------------------------
@@ -408,6 +361,8 @@ Route::prefix('v1')->group(function () {
     |     Route::post('/', [BookingController::class, 'store']);
     |     Route::get('{booking}', [BookingController::class, 'show']);
     |     Route::post('{booking}/cancel', [BookingController::class, 'cancel']);
+    |     Route::post('{booking}/checkin', [BookingController::class, 'checkIn']);
+    |     Route::post('{booking}/checkout', [BookingController::class, 'checkOut']);
     | });
     |
     |----------------------------------------------------------
@@ -416,8 +371,19 @@ Route::prefix('v1')->group(function () {
     | Route::middleware('auth:sanctum')->prefix('payments')
     |   ->name('payments.')->group(function () {
     |     Route::post('initiate', [PaymentController::class, 'initiate']);
-    |     Route::post('verify', [PaymentController::class, 'verify']);
-    |     Route::get('history', [PaymentController::class, 'history']);
+    |     Route::post('verify',   [PaymentController::class, 'verify']);
+    |     Route::get('history',   [PaymentController::class, 'history']);
+    |     Route::post('{payment}/refund', [PaymentController::class, 'refund']);
+    | });
+    |
+    |----------------------------------------------------------
+    | NOTIFICATION ROUTES (Notification Module)
+    |----------------------------------------------------------
+    | Route::middleware('auth:sanctum')->prefix('notifications')
+    |   ->name('notifications.')->group(function () {
+    |     Route::get('/', [NotificationController::class, 'index']);
+    |     Route::patch('{notification}/read', [NotificationController::class, 'markRead']);
+    |     Route::patch('read-all', [NotificationController::class, 'markAllRead']);
     | });
     */
 
