@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\CheckOutController;
 use App\Http\Controllers\Api\QRBookingController;
 use App\Http\Controllers\Api\BookingStatusHistoryController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\VehicleController;
+use App\Http\Controllers\Api\VehicleDocumentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -466,7 +468,87 @@ Route::prefix('v1')->group(function () {
 
         }); // end payments group
 
-}); // end /v1 prefix
+
+Route::middleware('auth:sanctum')->group(function () {
+ 
+    // ──────────────────────────────────────────────────────────────
+    // VEHICLES
+    // ──────────────────────────────────────────────────────────────
+    //
+    // GET    /api/v1/vehicles
+    //   → Authenticated user's own vehicles (paginated).
+    //   → Admins see all vehicles with owner info.
+    //   → Query params: ?status=active &vehicle_type_id=2
+    //                   &search=HR26 (searches plate, name, brand)
+    //                   &per_page=15
+    //
+    // POST   /api/v1/vehicles
+    //   → Register a new vehicle (always owned by auth user).
+    //   → vehicle_number is normalized: uppercase, no spaces.
+    //   → Validates plate uniqueness across the entire system.
+    //   → Defaults to status='active'.
+    //
+    // GET    /api/v1/vehicles/{vehicle}
+    //   → Full vehicle detail including all documents (latest first).
+    //   → Users can only view their own vehicles.
+    //   → Admins can view any vehicle.
+    //
+    // PUT    /api/v1/vehicles/{vehicle}
+    //   → Partial update (only send fields to change).
+    //   → Can toggle status: active ↔ inactive.
+    //   → vehicle_number uniqueness ignores own row.
+    //   → Users can only update their own vehicles.
+    //
+    // DELETE /api/v1/vehicles/{vehicle}
+    //   → Soft-delete (sets deleted_at, not a hard delete).
+    //   → Returns 409 Conflict if vehicle has active/confirmed bookings.
+    //   → Historical booking records referencing vehicle_id remain intact.
+    //
+    // ──────────────────────────────────────────────────────────────
+    Route::apiResource('vehicles', VehicleController::class);
+ 
+    // ──────────────────────────────────────────────────────────────
+    // VEHICLE DOCUMENTS (nested under vehicles)
+    // ──────────────────────────────────────────────────────────────
+    //
+    // GET    /api/v1/vehicles/{vehicle}/documents
+    //   → All documents for this vehicle, latest first.
+    //   → Query params: ?document_type=insurance &status=active
+    //
+    // POST   /api/v1/vehicles/{vehicle}/documents
+    //   → Upload a new document (multipart/form-data).
+    //   → Required: document (file, max 5MB, jpeg/jpg/png/webp/pdf)
+    //   →           document_type (rc|insurance|puc|fitness|permit)
+    //   → Optional: expiry_date (YYYY-MM-DD, must be future date)
+    //   → File stored as UUID filename (no user-provided names).
+    //   → Status always starts as 'pending' (requires admin verification).
+    //   → Multiple docs of same type allowed (for renewal history).
+    //
+    // GET    /api/v1/vehicles/{vehicle}/documents/{document}
+    //   → Single document detail with expiry flags:
+    //       is_valid, is_expired, days_until_expiry
+    //   → Validates {document} belongs to {vehicle} (scope check).
+    //
+    // PUT    /api/v1/vehicles/{vehicle}/documents/{document}
+    //   → Update expiry date and/or replace the file.
+    //   → Users: only while document is still 'pending'.
+    //     If new file uploaded by user → resets status to 'pending'.
+    //   → Admins: can update any document, including the status field.
+    //     Admin verifies by sending status='active' or 'rejected'.
+    //   → Old file is physically deleted when replaced (no orphans).
+    //
+    // DELETE /api/v1/vehicles/{vehicle}/documents/{document}
+    //   → Soft-deletes DB record + physically deletes the file.
+    //   → Users: cannot delete 'active' (verified) documents.
+    //     Must upload a new one instead (keeps compliance history).
+    //   → Admins: can delete any document status.
+    //
+    // ──────────────────────────────────────────────────────────────
+    Route::apiResource('vehicles.documents', VehicleDocumentController::class)
+         ->parameters(['documents' => 'document']);
+ 
+}); // end auth:sanctum (vehicle management)
+ }); // end /v1 prefix
 
 // ============================================================
 // API HEALTH CHECK — PUBLIC
