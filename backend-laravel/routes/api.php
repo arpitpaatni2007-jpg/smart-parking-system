@@ -9,6 +9,11 @@ use App\Http\Controllers\Api\ParkingController;
 use App\Http\Controllers\Api\ParkingSlotController;
 use App\Http\Controllers\Api\ParkingImageController;
 use App\Http\Controllers\Api\OwnerBankDetailController;
+use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\Api\CheckInController;
+use App\Http\Controllers\Api\CheckOutController;
+use App\Http\Controllers\Api\QRBookingController;
+use App\Http\Controllers\Api\BookingStatusHistoryController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -339,72 +344,68 @@ Route::prefix('v1')->group(function () {
     }); // end auth:sanctum (parking management)
 
     // ========================================================
-    // FUTURE ROUTE GROUPS
-    // ========================================================
+    // ====================================================================
+// ====================================================================
+// BOOKING MANAGEMENT ROUTES
+// ====================================================================
 
-    /*
-    |----------------------------------------------------------
-    | VEHICLE ROUTES (Vehicle Module)
-    |----------------------------------------------------------
-    | Route::middleware('auth:sanctum')->prefix('vehicles')
-    |   ->name('vehicles.')->group(function () {
-    |     Route::apiResource('/', VehicleController::class);
-    |     Route::apiResource('{vehicle}/documents', VehicleDocumentController::class);
-    | });
-    |
-    |----------------------------------------------------------
-    | BOOKING ROUTES (Booking Module)
-    |----------------------------------------------------------
-    | Route::middleware('auth:sanctum')->prefix('bookings')
-    |   ->name('bookings.')->group(function () {
-    |     Route::get('/', [BookingController::class, 'index']);
-    |     Route::post('/', [BookingController::class, 'store']);
-    |     Route::get('{booking}', [BookingController::class, 'show']);
-    |     Route::post('{booking}/cancel', [BookingController::class, 'cancel']);
-    |     Route::post('{booking}/checkin', [BookingController::class, 'checkIn']);
-    |     Route::post('{booking}/checkout', [BookingController::class, 'checkOut']);
-    | });
-    |
-    |----------------------------------------------------------
-    | PAYMENT ROUTES (Payment Module)
-    |----------------------------------------------------------
-    | Route::middleware('auth:sanctum')->prefix('payments')
-    |   ->name('payments.')->group(function () {
-    |     Route::post('initiate', [PaymentController::class, 'initiate']);
-    |     Route::post('verify',   [PaymentController::class, 'verify']);
-    |     Route::get('history',   [PaymentController::class, 'history']);
-    |     Route::post('{payment}/refund', [PaymentController::class, 'refund']);
-    | });
-    |
-    |----------------------------------------------------------
-    | NOTIFICATION ROUTES (Notification Module)
-    |----------------------------------------------------------
-    | Route::middleware('auth:sanctum')->prefix('notifications')
-    |   ->name('notifications.')->group(function () {
-    |     Route::get('/', [NotificationController::class, 'index']);
-    |     Route::patch('{notification}/read', [NotificationController::class, 'markRead']);
-    |     Route::patch('read-all', [NotificationController::class, 'markAllRead']);
-    | });
-    */
+Route::middleware('auth:sanctum')->group(function () {
+
+    // QR Verification
+    Route::post('bookings/verify-qr', [QRBookingController::class, 'verifyQR'])
+        ->name('bookings.qr.verify');
+
+    // Booking CRUD
+    Route::apiResource('bookings', BookingController::class);
+
+    // Cancel Booking
+    Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])
+        ->name('bookings.cancel');
+
+    // Check In
+    Route::post('bookings/{booking}/checkin', [CheckInController::class, 'store'])
+        ->name('bookings.checkin.store');
+
+    Route::get('bookings/{booking}/checkin', [CheckInController::class, 'show'])
+        ->name('bookings.checkin.show');
+
+    // Check Out
+    Route::post('bookings/{booking}/checkout', [CheckOutController::class, 'store'])
+        ->name('bookings.checkout.store');
+
+    Route::get('bookings/{booking}/checkout', [CheckOutController::class, 'show'])
+        ->name('bookings.checkout.show');
+
+    // QR Code
+    Route::get('bookings/{booking}/qr', [QRBookingController::class, 'show'])
+        ->name('bookings.qr.show');
+
+    Route::post('bookings/{booking}/qr', [QRBookingController::class, 'store'])
+        ->name('bookings.qr.regenerate');
+
+    // Booking History
+    Route::get('bookings/{booking}/history', [BookingStatusHistoryController::class, 'index'])
+        ->name('bookings.history.index');
+
+    Route::get('bookings/{booking}/history/{id}', [BookingStatusHistoryController::class, 'show'])
+        ->name('bookings.history.show');
+
+});
 
 }); // end /v1 prefix
 
-
 // ============================================================
 // API HEALTH CHECK — PUBLIC
-// ============================================================
-// Simple ping endpoint to confirm the API server is running.
-// Used by monitoring tools and the Flutter app on first launch.
 // ============================================================
 
 Route::get('health', function () {
     return response()->json([
         'success' => true,
         'message' => 'Smart Parking API is running.',
-        'data'    => [
-            'version'     => 'v1',
+        'data' => [
+            'version' => 'v1',
             'environment' => app()->environment(),
-            'timestamp'   => now()->toISOString(),
+            'timestamp' => now()->toISOString(),
         ],
     ]);
 })->name('health');
