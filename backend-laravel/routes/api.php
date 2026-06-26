@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\CheckInController;
 use App\Http\Controllers\Api\CheckOutController;
 use App\Http\Controllers\Api\QRBookingController;
 use App\Http\Controllers\Api\BookingStatusHistoryController;
+use App\Http\Controllers\Api\PaymentController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -163,8 +164,6 @@ Route::prefix('v1')->group(function () {
     // ========================================================
     //
     // All routes require a valid Sanctum Bearer token.
-    //
-    // FULL ROUTE MAP:
     //
     // ┌────────────────────────────────────────────────────────────────────────────┐
     // │ Verb   │ URI                                              │ Action          │
@@ -343,54 +342,129 @@ Route::prefix('v1')->group(function () {
 
     }); // end auth:sanctum (parking management)
 
-    // ========================================================
     // ====================================================================
-// ====================================================================
-// BOOKING MANAGEMENT ROUTES
-// ====================================================================
+    // BOOKING MANAGEMENT ROUTES
+    // ====================================================================
 
-Route::middleware('auth:sanctum')->group(function () {
+    Route::middleware('auth:sanctum')->group(function () {
 
-    // QR Verification
-    Route::post('bookings/verify-qr', [QRBookingController::class, 'verifyQR'])
-        ->name('bookings.qr.verify');
+        // QR Verification
+        Route::post('bookings/verify-qr', [QRBookingController::class, 'verifyQR'])
+            ->name('bookings.qr.verify');
 
-    // Booking CRUD
-    Route::apiResource('bookings', BookingController::class);
+        // Booking CRUD
+        Route::apiResource('bookings', BookingController::class);
 
-    // Cancel Booking
-    Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])
-        ->name('bookings.cancel');
+        // Cancel Booking
+        Route::post('bookings/{booking}/cancel', [BookingController::class, 'cancel'])
+            ->name('bookings.cancel');
 
-    // Check In
-    Route::post('bookings/{booking}/checkin', [CheckInController::class, 'store'])
-        ->name('bookings.checkin.store');
+        // Check In
+        Route::post('bookings/{booking}/checkin', [CheckInController::class, 'store'])
+            ->name('bookings.checkin.store');
 
-    Route::get('bookings/{booking}/checkin', [CheckInController::class, 'show'])
-        ->name('bookings.checkin.show');
+        Route::get('bookings/{booking}/checkin', [CheckInController::class, 'show'])
+            ->name('bookings.checkin.show');
 
-    // Check Out
-    Route::post('bookings/{booking}/checkout', [CheckOutController::class, 'store'])
-        ->name('bookings.checkout.store');
+        // Check Out
+        Route::post('bookings/{booking}/checkout', [CheckOutController::class, 'store'])
+            ->name('bookings.checkout.store');
 
-    Route::get('bookings/{booking}/checkout', [CheckOutController::class, 'show'])
-        ->name('bookings.checkout.show');
+        Route::get('bookings/{booking}/checkout', [CheckOutController::class, 'show'])
+            ->name('bookings.checkout.show');
 
-    // QR Code
-    Route::get('bookings/{booking}/qr', [QRBookingController::class, 'show'])
-        ->name('bookings.qr.show');
+        // QR Code
+        Route::get('bookings/{booking}/qr', [QRBookingController::class, 'show'])
+            ->name('bookings.qr.show');
 
-    Route::post('bookings/{booking}/qr', [QRBookingController::class, 'store'])
-        ->name('bookings.qr.regenerate');
+        Route::post('bookings/{booking}/qr', [QRBookingController::class, 'store'])
+            ->name('bookings.qr.regenerate');
 
-    // Booking History
-    Route::get('bookings/{booking}/history', [BookingStatusHistoryController::class, 'index'])
-        ->name('bookings.history.index');
+        // Booking History
+        Route::get('bookings/{booking}/history', [BookingStatusHistoryController::class, 'index'])
+            ->name('bookings.history.index');
 
-    Route::get('bookings/{booking}/history/{id}', [BookingStatusHistoryController::class, 'show'])
-        ->name('bookings.history.show');
+        Route::get('bookings/{booking}/history/{id}', [BookingStatusHistoryController::class, 'show'])
+            ->name('bookings.history.show');
 
-});
+    }); // end auth:sanctum (booking management)
+
+    // ====================================================================
+    // PAYMENT MANAGEMENT ROUTES
+    // ====================================================================
+    //
+    // ┌──────────┬──────────────────────────────────────────┬───────────────────────────┐
+    // │ Verb     │ URI                                       │ Action                    │
+    // ├──────────┼──────────────────────────────────────────┼───────────────────────────┤
+    // │ GET      │ /api/v1/payments/history                  │ PaymentController@history  │
+    // │ POST     │ /api/v1/payments/initiate                 │ PaymentController@initiate │
+    // │ POST     │ /api/v1/payments/verify                   │ PaymentController@verify   │
+    // │ POST     │ /api/v1/payments/refund                   │ PaymentController@refund   │
+    // │ GET      │ /api/v1/payments/{payment}                │ PaymentController@show     │
+    // ├──────────┼──────────────────────────────────────────┼───────────────────────────┤
+    // │ POST     │ /api/v1/payments/webhook  (PUBLIC)        │ PaymentController@webhook  │
+    // └──────────┴──────────────────────────────────────────┴───────────────────────────┘
+    //
+    // WHY IS /webhook PUBLIC?
+    //   Razorpay calls this endpoint directly from their servers.
+    //   It cannot send a Bearer token. Security is handled inside
+    //   webhook() by verifying the X-Razorpay-Signature header.
+    //
+    // VERIFY IN TERMINAL:
+    //   php artisan route:list --path=api/v1/payments
+    //
+    // ====================================================================
+
+    // ── Webhook — PUBLIC (no auth:sanctum) ────────────────────────────
+    // Registered BEFORE the auth group so Razorpay can reach it
+    // without a Bearer token.
+    Route::post(
+        'payments/webhook',
+        [PaymentController::class, 'webhook']
+    )->name('payments.webhook');
+
+    // ── Payment Routes — PROTECTED ─────────────────────────────────────
+    Route::middleware('auth:sanctum')
+        ->prefix('payments')
+        ->name('payments.')
+        ->group(function () {
+
+            // GET /api/v1/payments/history
+            // Paginated payment history for the authenticated user.
+            // Query params: ?status=success &payment_method=upi
+            //               &date_from=2026-01-01 &date_to=2026-01-31
+            //               &user_id=5 (admin only) &search=BK20260623
+            //               &per_page=15
+            // Named BEFORE {payment} so "history" is not matched as a route param.
+            Route::get('history', [PaymentController::class, 'history'])
+                ->name('history');
+
+            // POST /api/v1/payments/initiate
+            // Step 1: Create a Razorpay order. Returns order_id + amount to Flutter.
+            // Body: { booking_id, payment_method, currency? }
+            Route::post('initiate', [PaymentController::class, 'initiate'])
+                ->name('initiate');
+
+            // POST /api/v1/payments/verify
+            // Step 2: Verify Razorpay signature after Flutter checkout completes.
+            // Body: { payment_id, razorpay_payment_id, razorpay_order_id, razorpay_signature }
+            // On success → booking: confirmed, QR code generated.
+            Route::post('verify', [PaymentController::class, 'verify'])
+                ->name('verify');
+
+            // POST /api/v1/payments/refund
+            // Initiate a full or partial refund via Razorpay.
+            // Body: { payment_id, refund_amount?, reason?, notify_customer? }
+            Route::post('refund', [PaymentController::class, 'refund'])
+                ->name('refund');
+
+            // GET /api/v1/payments/{payment}
+            // Single payment detail — receipt screen, admin panel view.
+            // Registered LAST so static named segments above match first.
+            Route::get('{payment}', [PaymentController::class, 'show'])
+                ->name('show');
+
+        }); // end payments group
 
 }); // end /v1 prefix
 
@@ -403,9 +477,9 @@ Route::get('health', function () {
         'success' => true,
         'message' => 'Smart Parking API is running.',
         'data' => [
-            'version' => 'v1',
+            'version'     => 'v1',
             'environment' => app()->environment(),
-            'timestamp' => now()->toISOString(),
+            'timestamp'   => now()->toISOString(),
         ],
     ]);
 })->name('health');
