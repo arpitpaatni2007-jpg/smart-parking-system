@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\BookingStatusHistoryController;
 use App\Http\Controllers\Api\PaymentController;
 use App\Http\Controllers\Api\VehicleController;
 use App\Http\Controllers\Api\VehicleDocumentController;
+use App\Http\Controllers\Api\NotificationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -545,23 +546,49 @@ Route::middleware('auth:sanctum')->group(function () {
     //
     // ──────────────────────────────────────────────────────────────
     Route::apiResource('vehicles.documents', VehicleDocumentController::class)
-         ->parameters(['documents' => 'document']);
- 
-}); // end auth:sanctum (vehicle management)
- }); // end /v1 prefix
+    ->parameters(['documents' => 'document']);
 
-// ============================================================
-// API HEALTH CHECK — PUBLIC
-// ============================================================
+}); // end auth:sanctum (vehicle management)
+
+
+// ===============================
+// NOTIFICATION MANAGEMENT
+// ===============================
+
+Route::middleware('auth:sanctum')
+    ->prefix('notifications')
+    ->name('notifications.')
+    ->group(function () {
+
+        Route::get('unread-count', [NotificationController::class, 'unreadCount'])
+            ->name('unread-count');
+
+        Route::patch('read-all', [NotificationController::class, 'markAllAsRead'])
+            ->name('read-all');
+
+        Route::get('/', [NotificationController::class, 'index'])
+            ->name('index');
+
+        Route::post('/', [NotificationController::class, 'store'])
+            ->name('store');
+
+        Route::get('{notification}', [NotificationController::class, 'show'])
+            ->name('show');
+
+        Route::patch('{notification}/read', [NotificationController::class, 'markAsRead'])
+            ->name('mark-read');
+
+        Route::delete('{notification}', [NotificationController::class, 'destroy'])
+            ->name('destroy');
+
+    });
+
+
+
+
+// DON'T REMOVE THIS
+}); // end /v1 prefix
 
 Route::get('health', function () {
-    return response()->json([
-        'success' => true,
-        'message' => 'Smart Parking API is running.',
-        'data' => [
-            'version'     => 'v1',
-            'environment' => app()->environment(),
-            'timestamp'   => now()->toISOString(),
-        ],
-    ]);
+    return response()->json(['status' => 'ok']);
 })->name('health');
