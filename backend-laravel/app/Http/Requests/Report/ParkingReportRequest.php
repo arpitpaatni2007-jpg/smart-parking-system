@@ -139,14 +139,7 @@ class ParkingReportRequest extends FormRequest
     /**
      * Fail authorization with a JSON response, not a redirect.
      */
-    public function failedAuthorization(): \Illuminate\Http\JsonResponse
-    {
-        return response()->json([
-            'success' => false,
-            'message' => 'You are not authorized to access parking reports.',
-            'data'    => null,
-        ], 403);
-    }
+
 
     public function messages(): array
     {

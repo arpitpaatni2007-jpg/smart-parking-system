@@ -116,15 +116,7 @@ class UserReportRequest extends FormRequest
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function failedAuthorization(): \Illuminate\Http\JsonResponse
-    {
-        return response()->json([
-            'success' => false,
-            'message' => 'You are not authorized to access user reports.',
-            'data'    => null,
-        ], 403);
-    }
-
+    
     public function messages(): array
     {
         return [
