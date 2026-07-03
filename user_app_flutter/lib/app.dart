@@ -3,6 +3,7 @@ import 'features/auth/presentation/login_screen.dart';
 import 'features/auth/presentation/register_screen.dart';
 import 'core/theme/app_theme.dart';
 import 'features/splash/splash_screen.dart';
+import 'features/auth/presentation/forgot_password_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -13,7 +14,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const RegisterScreen(),
+      home: const ForgotPasswordScreen(),
     );
   }
 }
