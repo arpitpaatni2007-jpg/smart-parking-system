@@ -9,6 +9,7 @@ import 'features/auth/presentation/reset_password_screen.dart';
 import 'features/home/presentation/home_screen.dart';
 import 'features/parking/presentation/parking_list_screen.dart';
 import 'features/parking/presentation/parking_details_screen.dart';
+import 'features/parking/presentation/slot_selection_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -19,7 +20,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-     home: const ParkingDetailsScreen(),
+     home: const SlotSelectionScreen(),
     );
   }
 }
