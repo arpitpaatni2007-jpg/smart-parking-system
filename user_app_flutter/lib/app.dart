@@ -12,6 +12,7 @@ import 'features/parking/presentation/parking_details_screen.dart';
 import 'features/parking/presentation/slot_selection_screen.dart';
 import 'features/booking/presentation/booking_confirmation_screen.dart';
 import 'features/vehicle/presentation/vehicle_list_screen.dart';
+import 'features/vehicle/presentation/add_vehicle_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -22,7 +23,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const VehicleListScreen(),
+      home: const AddVehicleScreen(),
     );
   }
 }
