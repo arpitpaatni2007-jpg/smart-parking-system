@@ -17,7 +17,7 @@ import 'features/booking/presentation/my_bookings_screen.dart';
 import 'features/profile/presentation/profile_screen.dart';
 import 'features/profile/presentation/edit_profile_screen.dart';
 import 'features/payment/presentation/payment_history_screen.dart';
-
+import 'features/notification/presentation/notification_screen.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -28,7 +28,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const PaymentHistoryScreen(),
+      home: const NotificationScreen(),
     );
   }
 }
