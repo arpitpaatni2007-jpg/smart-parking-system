@@ -20,6 +20,7 @@ import 'features/payment/presentation/payment_history_screen.dart';
 import 'features/notification/presentation/notification_screen.dart';
 import 'features/profile/presentation/settings_screen.dart';
 import 'features/profile/presentation/help_support_screen.dart';
+import 'features/profile/presentation/change_password_screen.dart';
 
 
 
@@ -32,7 +33,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const HelpSupportScreen(),
+      home: const ChangePasswordScreen(),
     );
   }
 }
