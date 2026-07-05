@@ -16,6 +16,7 @@ import 'features/vehicle/presentation/add_vehicle_screen.dart';
 import 'features/booking/presentation/my_bookings_screen.dart';
 import 'features/profile/presentation/profile_screen.dart';
 import 'features/profile/presentation/edit_profile_screen.dart';
+import 'features/payment/presentation/payment_history_screen.dart';
 
 
 class App extends StatelessWidget {
@@ -27,7 +28,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const EditProfileScreen(),
+      home: const PaymentHistoryScreen(),
     );
   }
 }
