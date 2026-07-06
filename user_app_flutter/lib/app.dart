@@ -21,7 +21,7 @@ import 'features/notification/presentation/notification_screen.dart';
 import 'features/profile/presentation/settings_screen.dart';
 import 'features/profile/presentation/help_support_screen.dart';
 import 'features/profile/presentation/change_password_screen.dart';
-
+import 'features/booking/presentation/booking_details_screen.dart';
 
 
 class App extends StatelessWidget {
@@ -33,7 +33,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Smart Parking',
       theme: AppTheme.lightTheme,
-      home: const ChangePasswordScreen(),
+      home: const BookingDetailsScreen(),
     );
   }
 }
