@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../config/routes/app_routes.dart';
 
 // ============================================================
 // ResetPasswordScreen
@@ -144,8 +145,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void _handleBackToLogin() {
-    // TODO: navigate → AppRouter.login
-  }
+  Navigator.of(context).pushNamedAndRemoveUntil(
+    AppRoutes.login,
+    (route) => false,
+  );
+}
 
   // ── Build ─────────────────────────────────────────────────────
 

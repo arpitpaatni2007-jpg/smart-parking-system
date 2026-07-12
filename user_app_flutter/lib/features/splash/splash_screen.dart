@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import '../../config/routes/app_router.dart';
 import '../../core/theme/app_colors.dart';
+import '../../config/routes/app_routes.dart';
 
 // ============================================================
 // SplashScreen
@@ -125,13 +126,9 @@ class _SplashScreenState extends State<SplashScreen>
 
   // ── Navigation ─────────────────────────────────────────────────
   void _navigateNext() {
-    if (!mounted) return;
-
-    // Fade-transition to the next screen.
-    Navigator.of(context).pushReplacementNamed(
-      AppRouter.login, // → swap to AppRouter.home once auth is built
-    );
-  }
+  if (!mounted) return;
+  Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+}
 
   // ── Build ───────────────────────────────────────────────────────
   @override

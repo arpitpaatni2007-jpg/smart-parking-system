@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../config/routes/app_routes.dart';
 
 // ============================================================
 // OtpVerificationScreen
@@ -167,20 +168,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   // ── Actions ───────────────────────────────────────────────────
 
   Future<void> _handleVerify() async {
-    if (!_isOtpComplete) return;
-    FocusScope.of(context).unfocus();
-
-    setState(() => _isLoading = true);
-
-    // TODO: replace with your auth repository call.
-    // e.g. await ref.read(authRepositoryProvider).verifyOtp(_currentOtp());
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    // TODO: navigate on success → AppRouter.home
-  }
+  if (!_isOtpComplete) return;
+  FocusScope.of(context).unfocus();
+  setState(() => _isLoading = true);
+  // TODO: replace with your auth repository call.
+  await Future.delayed(const Duration(seconds: 2));
+  if (!mounted) return;
+  setState(() => _isLoading = false);
+  Navigator.of(context).pushNamed(AppRoutes.resetPassword);
+}
 
   Future<void> _handleResend() async {
     if (!_canResend) return;

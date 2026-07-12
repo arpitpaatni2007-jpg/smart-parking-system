@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
-
+import '../../../config/routes/app_routes.dart';
 // ============================================================
 // RegisterScreen
 // ============================================================
@@ -152,30 +152,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
   // ── Submit ────────────────────────────────────────────────────
 
   Future<void> _handleRegister() async {
-    // Dismiss keyboard before validating.
-    FocusScope.of(context).unfocus();
-
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    setState(() => _isLoading = true);
-
-    // TODO: replace with your auth repository call.
-    // e.g. await ref.read(authRepositoryProvider).register(name, email, phone, password);
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    // TODO: navigate on success → AppRouter.home or AppRouter.login
-  }
+  FocusScope.of(context).unfocus();
+  if (!(_formKey.currentState?.validate() ?? false)) return;
+  setState(() => _isLoading = true);
+  // TODO: replace with your auth repository call.
+  await Future.delayed(const Duration(seconds: 2));
+  if (!mounted) return;
+  setState(() => _isLoading = false);
+  Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+}
 
   void _handleGoogleSignUp() {
     // TODO: trigger Google OAuth flow
   }
 
-  void _handleLogin() {
-    // TODO: navigate → AppRouter.login
-  }
+  
+void _handleLogin() {
+  Navigator.of(context).pop();
+}
 
   // ── Build ─────────────────────────────────────────────────────
 

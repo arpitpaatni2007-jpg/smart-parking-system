@@ -116,9 +116,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     setState(() => _isLoading = false);
   }
 
-  void _handleBackToLogin() {
-    // TODO: navigate → AppRouter.login
-  }
+void _handleBackToLogin() {
+  Navigator.of(context).pop();
+}
 
   // ── Build ─────────────────────────────────────────────────────
 

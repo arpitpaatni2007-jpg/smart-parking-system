@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../config/routes/app_routes.dart';
+
 
 // ============================================================
 // LoginScreen
@@ -107,35 +109,27 @@ class _LoginScreenState extends State<LoginScreen> {
   // ── Submit ────────────────────────────────────────────────────
 
   Future<void> _handleLogin() async {
-    // Dismiss keyboard before validating.
-    FocusScope.of(context).unfocus();
-
-    if (!(_formKey.currentState?.validate() ?? false)) return;
-
-    setState(() => _isLoading = true);
-
-    // TODO: replace with your auth repository call.
-    // e.g. await ref.read(authRepositoryProvider).login(email, password);
-    await Future.delayed(const Duration(seconds: 2));
-
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    // TODO: navigate on success → AppRouter.home
-  }
+  FocusScope.of(context).unfocus();
+  if (!(_formKey.currentState?.validate() ?? false)) return;
+  setState(() => _isLoading = true);
+  // TODO: replace with your auth repository call.
+  await Future.delayed(const Duration(seconds: 2));
+  if (!mounted) return;
+  setState(() => _isLoading = false);
+  Navigator.of(context).pushReplacementNamed(AppRoutes.home);
+}
 
   void _handleForgotPassword() {
-    // TODO: navigate → AppRouter.forgotPassword
-  }
+  Navigator.of(context).pushNamed(AppRoutes.forgotPassword);
+}
 
   void _handleGoogleSignIn() {
     // TODO: trigger Google OAuth flow
   }
 
   void _handleSignUp() {
-    // TODO: navigate → AppRouter.register
-  }
-
+  Navigator.of(context).pushNamed(AppRoutes.register);
+}
   // ── Build ─────────────────────────────────────────────────────
 
   @override
