@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../../config/routes/app_routes.dart';
 import '../../../core/theme/app_colors.dart';
 
 // ============================================================
@@ -131,7 +132,21 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       bottomNavigationBar: _BottomNavBar(
         selectedIndex: _selectedNavIndex,
-        onTap: (i) => setState(() => _selectedNavIndex = i),
+        onTap: (i) {
+          switch (i) {
+            case 0:
+              setState(() => _selectedNavIndex = 0);
+            case 1:
+              setState(() => _selectedNavIndex = 1);
+              Navigator.of(context).pushNamed(AppRoutes.myBookings);
+            case 2:
+              setState(() => _selectedNavIndex = 2);
+              Navigator.of(context).pushNamed(AppRoutes.notifications);
+            case 3:
+              setState(() => _selectedNavIndex = 3);
+              Navigator.of(context).pushNamed(AppRoutes.profile);
+          }
+        },
       ),
     );
   }
@@ -160,7 +175,10 @@ class _HomeBody extends StatelessWidget {
         SliverToBoxAdapter(
           child: Padding(
             padding: EdgeInsets.fromLTRB(hPad, 20, hPad, 0),
-            child:   const _SearchBar(),
+            child: GestureDetector(
+              onTap: () => Navigator.of(context).pushNamed(AppRoutes.parkingList),
+              child: const _SearchBar(),
+            ),
           ),
         ),
 
@@ -179,7 +197,7 @@ class _HomeBody extends StatelessWidget {
             child:   _SectionHeader(
               title:    'Featured Parking',
               actionLabel: 'See all',
-              onAction: () {},
+              onAction: () => Navigator.of(context).pushNamed(AppRoutes.parkingList),
             ),
           ),
         ),
@@ -199,7 +217,7 @@ class _HomeBody extends StatelessWidget {
             child:   _SectionHeader(
               title:    'Nearby Parking',
               actionLabel: 'View map',
-              onAction: () {},
+              onAction: () => Navigator.of(context).pushNamed(AppRoutes.parkingList),
             ),
           ),
         ),
@@ -264,14 +282,14 @@ class _TopBar extends StatelessWidget {
           _IconBadgeButton(
             icon:       Icons.notifications_outlined,
             badgeCount: 3,
-            onTap:      () {},
+            onTap:      () => Navigator.of(context).pushNamed(AppRoutes.notifications),
           ),
 
           const SizedBox(width: 10),
 
           // ── Avatar ─────────────────────────────────────
           GestureDetector(
-            onTap: () {},
+            onTap: () => Navigator.of(context).pushNamed(AppRoutes.profile),
             child: Container(
               width:  44,
               height: 44,
@@ -748,7 +766,7 @@ class _FeaturedParkingCard extends StatelessWidget {
 
                 // Book Now CTA
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () => Navigator.of(context).pushNamed(AppRoutes.parkingDetails),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
@@ -972,7 +990,7 @@ class _NearbyParkingCard extends StatelessWidget {
 
           // ── Book Arrow Button ──────────────────────────
           GestureDetector(
-            onTap: () {},
+            onTap: () => Navigator.of(context).pushNamed(AppRoutes.parkingDetails),
             child: Container(
               width:  38,
               height: 38,

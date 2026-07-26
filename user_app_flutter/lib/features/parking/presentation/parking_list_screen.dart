@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../../../core/theme/app_colors.dart';
+import '../../../config/routes/app_routes.dart';
 
 // ============================================================
 // ParkingListScreen
@@ -328,7 +329,7 @@ class _ParkingListScreenState extends State<ParkingListScreen> {
           icon:  const Icon(Icons.map_outlined, size: 22),
           color: AppColors.primary,
           tooltip: 'Map view',
-          onPressed: () {}, // TODO: navigate to map screen
+           onPressed: () => Navigator.pushNamed(context, AppRoutes.parkingList),
         ),
         const SizedBox(width: 4),
       ],
@@ -1319,7 +1320,7 @@ class _BookNowButton extends StatelessWidget {
     return SizedBox(
       height: compact ? 32 : 46,
       child: FilledButton(
-        onPressed: isOpen ? () {} : null,
+        onPressed: isOpen ? () => Navigator.pushNamed(context, AppRoutes.parkingDetails) : null,
         style: FilledButton.styleFrom(
           backgroundColor:         AppColors.primary,
           disabledBackgroundColor: AppColors.surfaceVariant,
