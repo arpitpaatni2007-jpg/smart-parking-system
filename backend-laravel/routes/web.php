@@ -19,3 +19,6 @@ Route::get('/parkings/create', function () {
 Route::get('/parkings/pricing', function () {
     return view('admin.parkings.pricing');
 })->name('admin.parkings.pricing');
+Route::get('/parkings/facilities', function () {
+    return view('admin.parkings.facilities');
+})->name('admin.parkings.facilities');
