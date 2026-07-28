@@ -13,3 +13,6 @@ Route::get('/parking-owners', function () {
 Route::get('/parking-owners/show', function () {
     return view('admin.parking-owners.show');
 })->name('admin.parking-owners.show');
+Route::get('/parkings/create', function () {
+    return view('admin.parkings.create');
+})->name('admin.parkings.create');
