@@ -9,3 +9,7 @@ Route::get('/', function () {
 Route::get('/parking-owners', function () {
     return view('admin.parking-owners.index');
 })->name('admin.parking-owners.index');
+
+Route::get('/parking-owners/show', function () {
+    return view('admin.parking-owners.show');
+})->name('admin.parking-owners.show');
