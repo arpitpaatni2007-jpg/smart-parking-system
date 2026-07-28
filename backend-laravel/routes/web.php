@@ -22,3 +22,6 @@ Route::get('/parkings/pricing', function () {
 Route::get('/parkings/facilities', function () {
     return view('admin.parkings.facilities');
 })->name('admin.parkings.facilities');
+Route::get('/parkings/images', function () {
+    return view('admin.parkings.images');
+})->name('admin.parkings.images');
