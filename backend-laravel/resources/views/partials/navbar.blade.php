@@ -126,7 +126,7 @@
                 "
             >
                 <li>
-                    
+                    <a
                         class="dropdown-item d-flex align-items-center gap-2"
                         href="#"
                         style="border-radius:7px; padding:.45rem .75rem;"
@@ -136,7 +136,7 @@
                     </a>
                 </li>
                 <li>
-                    
+                    <a
                         class="dropdown-item d-flex align-items-center gap-2"
                         href="#"
                         style="border-radius:7px; padding:.45rem .75rem;"
