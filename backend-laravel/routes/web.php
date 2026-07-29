@@ -49,3 +49,6 @@ Route::get('/users', function () {
 Route::get('/users/show', function () {
     return view('admin.users.show');
 })->name('admin.users.show');
+Route::get('/reports', function () {
+    return view('admin.reports.dashboard');
+})->name('admin.reports.dashboard');
