@@ -55,3 +55,6 @@ Route::get('/reports', function () {
 Route::get('/notifications', function () {
     return view('admin.notifications.index');
 })->name('admin.notifications.index');
+Route::get('/support', function () {
+    return view('admin.support.index');
+})->name('admin.support.index');
