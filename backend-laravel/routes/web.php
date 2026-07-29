@@ -37,3 +37,6 @@ Route::get('/bookings/show', function () {
 Route::get('/payments', function () {
     return view('admin.payments.index');
 })->name('admin.payments.index');
+Route::get('/payments/show', function () {
+    return view('admin.payments.show');
+})->name('admin.payments.show');
