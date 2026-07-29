@@ -46,3 +46,6 @@ Route::get('/earnings', function () {
 Route::get('/users', function () {
     return view('admin.users.index');
 })->name('admin.users.index');
+Route::get('/users/show', function () {
+    return view('admin.users.show');
+})->name('admin.users.show');
