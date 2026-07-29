@@ -61,3 +61,6 @@ Route::get('/support', function () {
 Route::get('/support/show', function () {
     return view('admin.support.show');
 })->name('admin.support.show');
+Route::get('/cms', function () {
+    return view('admin.cms.index');
+})->name('admin.cms.index');
