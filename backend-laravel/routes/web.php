@@ -40,3 +40,6 @@ Route::get('/payments', function () {
 Route::get('/payments/show', function () {
     return view('admin.payments.show');
 })->name('admin.payments.show');
+Route::get('/earnings', function () {
+    return view('admin.earnings.dashboard');
+})->name('admin.earnings.dashboard');
