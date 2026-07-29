@@ -43,3 +43,6 @@ Route::get('/payments/show', function () {
 Route::get('/earnings', function () {
     return view('admin.earnings.dashboard');
 })->name('admin.earnings.dashboard');
+Route::get('/users', function () {
+    return view('admin.users.index');
+})->name('admin.users.index');
