@@ -52,3 +52,6 @@ Route::get('/users/show', function () {
 Route::get('/reports', function () {
     return view('admin.reports.dashboard');
 })->name('admin.reports.dashboard');
+Route::get('/notifications', function () {
+    return view('admin.notifications.index');
+})->name('admin.notifications.index');
