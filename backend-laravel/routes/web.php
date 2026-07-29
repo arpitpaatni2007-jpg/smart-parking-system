@@ -31,3 +31,6 @@ Route::get('/parkings/review', function () {
 Route::get('/bookings', function () {
     return view('admin.bookings.index');
 })->name('admin.bookings.index');
+Route::get('/bookings/show', function () {
+    return view('admin.bookings.show');
+})->name('admin.bookings.show');
