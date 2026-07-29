@@ -58,3 +58,6 @@ Route::get('/notifications', function () {
 Route::get('/support', function () {
     return view('admin.support.index');
 })->name('admin.support.index');
+Route::get('/support/show', function () {
+    return view('admin.support.show');
+})->name('admin.support.show');
