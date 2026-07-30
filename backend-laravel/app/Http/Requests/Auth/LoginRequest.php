@@ -2,24 +2,18 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Auth\Events\Lockout;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 
-/**
- * ============================================================
- * LoginRequest — Form Request Validation
- * ============================================================
- *
- * Validates the incoming login payload before it reaches
- * the AuthController. Only checks that the fields are present
- * and properly formatted — credential verification (wrong password,
- * account not found) is handled in the controller.
- */
 class LoginRequest extends FormRequest
 {
     /**
-     * Anyone can attempt to login — no prior auth required.
+     * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
@@ -27,64 +21,66 @@ class LoginRequest extends FormRequest
     }
 
     /**
-     * Validation rules for the login request.
+     * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            /**
-             * Email used as the unique login identifier.
-             * - required: must be present
-             * - string: must be text type
-             * - email: must be valid email format
-             */
             'email' => ['required', 'string', 'email'],
-
-            /**
-             * Account password.
-             * - required: must be present
-             * - string: must be text type
-             *
-             * NOTE: We deliberately do NOT check min:8 here.
-             * If a user's password was set when min was 6 characters,
-             * we should still let them attempt login.
-             * Password strength rules only apply at registration/reset.
-             */
             'password' => ['required', 'string'],
         ];
     }
 
     /**
-     * Custom human-readable error messages.
+     * Attempt to authenticate the request's credentials.
      *
-     * @return array<string, string>
+     * @throws ValidationException
      */
-    public function messages(): array
+    public function authenticate(): void
     {
-        return [
-            'email.required'    => 'Please enter your email address.',
-            'email.email'       => 'Please enter a valid email address.',
-            'password.required' => 'Please enter your password.',
-        ];
+        $this->ensureIsNotRateLimited();
+
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
+
+        RateLimiter::clear($this->throttleKey());
     }
 
     /**
-     * Return JSON error response on validation failure.
-     * Required for API endpoints (prevents HTML redirect).
+     * Ensure the login request is not rate limited.
      *
-     * @param  \Illuminate\Contracts\Validation\Validator $validator
-     * @throws \Illuminate\Http\Exceptions\HttpResponseException
+     * @throws ValidationException
      */
-    protected function failedValidation(Validator $validator): void
+    public function ensureIsNotRateLimited(): void
     {
-        throw new HttpResponseException(
-            response()->json([
-                'success' => false,
-                'message' => 'Validation failed.',
-                'errors'  => $validator->errors(),
-            ], 422)
-        );
+        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+            return;
+        }
+
+        event(new Lockout($this));
+
+        $seconds = RateLimiter::availableIn($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'email' => trans('auth.throttle', [
+                'seconds' => $seconds,
+                'minutes' => ceil($seconds / 60),
+            ]),
+        ]);
+    }
+
+    /**
+     * Get the rate limiting throttle key for the request.
+     */
+    public function throttleKey(): string
+    {
+        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
     }
 }
