@@ -73,3 +73,6 @@ Route::get('/settings', function () {
 Route::get('/roles', function () {
     return view('admin.roles.index');
 })->name('admin.roles.index');
+Route::get('/permissions', function () {
+    return view('admin.permissions.index');
+})->name('admin.permissions.index');
