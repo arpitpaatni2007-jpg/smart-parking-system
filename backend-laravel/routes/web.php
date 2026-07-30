@@ -67,3 +67,6 @@ Route::get('/cms', function () {
 Route::get('/cms/edit', function () {
     return view('admin.cms.edit');
 })->name('admin.cms.edit');
+Route::get('/settings', function () {
+    return view('admin.settings.index');
+})->name('admin.settings.index');
