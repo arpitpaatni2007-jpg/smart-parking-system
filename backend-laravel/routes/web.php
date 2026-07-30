@@ -70,3 +70,6 @@ Route::get('/cms/edit', function () {
 Route::get('/settings', function () {
     return view('admin.settings.index');
 })->name('admin.settings.index');
+Route::get('/roles', function () {
+    return view('admin.roles.index');
+})->name('admin.roles.index');
