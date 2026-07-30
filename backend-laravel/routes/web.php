@@ -79,3 +79,6 @@ Route::get('/permissions', function () {
 Route::get('/activity-logs', function () {
     return view('admin.activity.index');
 })->name('admin.activity.index');
+Route::get('/profile', function () {
+    return view('admin.profile.index');
+})->name('admin.profile.index');
