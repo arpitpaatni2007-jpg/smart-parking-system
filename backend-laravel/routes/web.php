@@ -82,3 +82,6 @@ Route::get('/activity-logs', function () {
 Route::get('/profile', function () {
     return view('admin.profile.index');
 })->name('admin.profile.index');
+Route::get('/system-dashboard', function () {
+    return view('admin.system.dashboard');
+})->name('admin.system.dashboard');
