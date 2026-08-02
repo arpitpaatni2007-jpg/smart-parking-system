@@ -202,7 +202,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.system-users.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.system-users.*') ? 'active' : '' }}">
                     <i class="bi bi-shield-person" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>System Users</span>
