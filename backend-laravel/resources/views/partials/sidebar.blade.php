@@ -90,7 +90,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.vehicles.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.vehicles.*') ? 'active' : '' }}">
                     <i class="bi bi-car-front" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Vehicles</span>

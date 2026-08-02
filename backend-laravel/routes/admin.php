@@ -90,3 +90,6 @@ Route::get('/system-dashboard', function () {
 Route::get('/parkings', function () {
     return view('admin.parkings.index');
 })->name('admin.parkings.index');
+Route::get('/vehicles', function () {
+    return view('admin.vehicles.index');
+})->name('admin.vehicles.index');
