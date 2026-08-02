@@ -40,8 +40,8 @@
             ">Main</div>
 
             <li>
-                <a href="#"
-                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                <a href="{{ route('dashboard') }}"
+                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                     <i class="bi bi-speedometer2" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Dashboard</span>
                 </a>
@@ -58,7 +58,7 @@
             ">Management</div>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.users.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
                     <i class="bi bi-people" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Users</span>
@@ -66,8 +66,8 @@
             </li>
 
             <li>
-                <a href="#"
-                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.owners.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.parking-owners.index') }}"
+                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.parking-owners.*') ? 'active' : '' }}">
                     <i class="bi bi-person-badge" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Parking Owners</span>
                 </a>
@@ -82,7 +82,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.bookings.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.bookings.*') ? 'active' : '' }}">
                     <i class="bi bi-calendar2-check" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Bookings</span>
@@ -108,7 +108,7 @@
             ">Finance</div>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.payments.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.payments.*') ? 'active' : '' }}">
                     <i class="bi bi-credit-card" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Payments</span>
@@ -116,7 +116,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.earnings.dashboard') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.earnings.*') ? 'active' : '' }}">
                     <i class="bi bi-graph-up-arrow" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Earnings</span>
@@ -142,7 +142,7 @@
             ">Communication</div>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.notifications.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">
                     <i class="bi bi-bell" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Notifications</span>
@@ -150,7 +150,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.support.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.support.*') ? 'active' : '' }}">
                     <i class="bi bi-headset" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Support</span>
@@ -158,7 +158,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.cms.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.cms.*') ? 'active' : '' }}">
                     <i class="bi bi-file-earmark-text" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>CMS</span>
@@ -176,7 +176,7 @@
             ">Analytics</div>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.reports.dashboard') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
                     <i class="bi bi-bar-chart-line" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Reports</span>
@@ -194,7 +194,7 @@
             ">System</div>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.settings.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}">
                     <i class="bi bi-gear" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Settings</span>
@@ -210,7 +210,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.roles.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.roles.*') ? 'active' : '' }}">
                     <i class="bi bi-key" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Roles &amp; Permissions</span>
@@ -218,8 +218,8 @@
             </li>
 
             <li>
-                <a href="#"
-                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.logs.*') ? 'active' : '' }}">
+                <a href="{{ route('admin.activity.index') }}"
+                   class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.activity.*') ? 'active' : '' }}">
                     <i class="bi bi-journal-code" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Logs</span>
                 </a>
@@ -242,14 +242,14 @@
         padding:     0.875rem 1rem;
         flex-shrink: 0;
     ">
-        <a href="#"
+        <a href="{{ route('admin.profile.index') }}"
            class="d-flex align-items-center gap-2 text-decoration-none
-                  {{ request()->routeIs('admin.profile') ? 'sidebar-active' : '' }}"
+                  {{ request()->routeIs('admin.profile.*') ? 'sidebar-active' : '' }}"
            style="
                padding:       0.5rem 0.625rem;
                border-radius: 8px;
                transition:    background 0.18s;
-               background:    {{ request()->routeIs('admin.profile') ? 'var(--sidebar-active-bg)' : 'transparent' }};
+               background:    {{ request()->routeIs('admin.profile.*') ? 'var(--sidebar-active-bg)' : 'transparent' }};
            "
            onmouseover="if(!this.classList.contains('sidebar-active')) this.style.background='var(--sidebar-hover-bg)'"
            onmouseout="if(!this.classList.contains('sidebar-active'))  this.style.background='transparent'"
