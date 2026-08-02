@@ -124,7 +124,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.payouts.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.payouts.*') ? 'active' : '' }}">
                     <i class="bi bi-send" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Payouts</span>

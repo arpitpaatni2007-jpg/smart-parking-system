@@ -93,3 +93,6 @@ Route::get('/parkings', function () {
 Route::get('/vehicles', function () {
     return view('admin.vehicles.index');
 })->name('admin.vehicles.index');
+Route::get('/payouts', function () {
+    return view('admin.payouts.index');
+})->name('admin.payouts.index');
