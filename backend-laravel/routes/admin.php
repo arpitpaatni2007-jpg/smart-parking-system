@@ -99,3 +99,6 @@ Route::get('/payouts', function () {
 Route::get('/system-users', function () {
     return view('admin.system-users.index');
 })->name('admin.system-users.index');
+Route::get('/app-version', function () {
+    return view('admin.system.app-version');
+})->name('admin.system.app-version');

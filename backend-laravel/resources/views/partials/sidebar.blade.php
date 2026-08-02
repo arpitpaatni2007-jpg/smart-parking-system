@@ -226,7 +226,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.system.app-version') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.app-version.*') ? 'active' : '' }}">
                     <i class="bi bi-phone" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>App Version</span>
