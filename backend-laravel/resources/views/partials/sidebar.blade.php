@@ -74,7 +74,7 @@
             </li>
 
             <li>
-                <a href="#"
+                <a href="{{ route('admin.parkings.index') }}"
                    class="d-flex align-items-center gap-2 text-decoration-none {{ request()->routeIs('admin.parkings.*') ? 'active' : '' }}">
                     <i class="bi bi-signpost-2" style="font-size:1rem; width:18px; flex-shrink:0;"></i>
                     <span>Parkings</span>

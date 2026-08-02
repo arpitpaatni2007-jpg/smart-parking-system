@@ -87,3 +87,6 @@ Route::get('/system-dashboard', function () {
     return view('admin.system.dashboard');
 })->name('admin.system.dashboard');
 });
+Route::get('/parkings', function () {
+    return view('admin.parkings.index');
+})->name('admin.parkings.index');
